@@ -628,11 +628,31 @@ function sendToARbox(width, height) {
     }
 }
 
-// 删除lobe-theme插件显示的空白tab栏
-const interval = setInterval(function() {
-    const element = document.querySelector('[data-node-key="tab_stylez_menutab"]');
-    if (element) {
-        element.remove();
-        clearInterval(interval); // 成功删除后清除轮询
-    }
-}, 500); // 每500毫秒尝试一次
+// 通用处理函数
+function processElements() {
+    // 删除lobe-theme插件显示的空白tab栏
+    const tabInterval = setInterval(function() {
+        const tabElement = document.querySelector('[data-node-key="tab_stylez_menutab"]');
+        if (tabElement) {
+            tabElement.remove();
+            console.log('Tab element removed.');
+            clearInterval(tabInterval); // 成功删除后清除轮询
+        }
+    }, 500); // 每500毫秒尝试一次
+
+    // 修改SVG元素的宽度和高度，并移动SVG元素
+    const svgInterval = setInterval(function() {
+        const svgElement = document.querySelector('#component-2510 .dropdown-arrow.svelte-xjn76a');
+        if (svgElement) {
+            svgElement.setAttribute('width', '10%');
+            svgElement.setAttribute('height', '10%');
+            // 移动SVG元素：例如向右移动
+            svgElement.setAttribute('transform', 'translate(73, 0)');
+            console.log('SVG attributes updated and positioned.');
+            clearInterval(svgInterval); // 成功修改后清除轮询
+        }
+    }, 500); // 每500毫秒尝试一次
+}
+
+// 调用处理函数
+processElements();
