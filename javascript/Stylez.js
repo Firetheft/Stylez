@@ -627,3 +627,12 @@ function sendToARbox(width, height) {
         console.error("无法找到img2img_width或img2img_height元素");
     }
 }
+
+// 删除lobe-theme插件显示的空白tab栏
+const interval = setInterval(function() {
+    const element = document.querySelector('[data-node-key="tab_stylez_menutab"]');
+    if (element) {
+        element.remove();
+        clearInterval(interval); // 成功删除后清除轮询
+    }
+}, 500); // 每500毫秒尝试一次
