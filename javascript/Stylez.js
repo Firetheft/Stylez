@@ -641,15 +641,20 @@ function processElements() {
     }, 500); // 每500毫秒尝试一次
 
     // 修改SVG元素的宽度和高度，并移动SVG元素
-    const svgInterval = setInterval(function() {
-        const svgElement = document.querySelector('#component-2510 .dropdown-arrow.svelte-xjn76a');
-        if (svgElement) {
-            svgElement.setAttribute('width', '10%');
-            svgElement.setAttribute('height', '10%');
-            // 移动SVG元素：例如向右移动
-            svgElement.setAttribute('transform', 'translate(73, 0)');
-            console.log('SVG attributes updated and positioned.');
-            clearInterval(svgInterval); // 成功修改后清除轮询
+    const interval = setInterval(function() {
+        // 选择包含SVG的容器
+        const container = document.querySelector('.gradio-dropdown.multiselect');
+        if (container) {
+            const svgElement = container.querySelector('svg.dropdown-arrow.svelte-xjn76a');
+            if (svgElement) {
+                // 修改SVG的宽度和高度属性
+                svgElement.setAttribute('width', '10%');
+                svgElement.setAttribute('height', '10%');
+                // 移动SVG元素：例如向右移动73px
+                svgElement.setAttribute('transform', 'translate(73, 0)');
+                console.log('SVG attributes updated and positioned.');
+                clearInterval(interval);
+            }
         }
     }, 500); // 每500毫秒尝试一次
 }
