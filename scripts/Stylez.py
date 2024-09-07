@@ -343,17 +343,19 @@ def create_ar_button(label, width, height, button_class="ar-button"):
 
 def update_prompt_types(model_name):
     """根据选择的模型更新提示类型下拉菜单"""
-    if model_name == "MiaoshouAI/Florence-2-base-PromptGen":
+    if model_name in ["MiaoshouAI/Florence-2-base-PromptGen-v1.5", "MiaoshouAI/Florence-2-large-PromptGen-v1.5"]:
         choices = [
-            "<MORE_DETAILED_CAPTION>",
+            "<GENERATE_TAGS>",
+            "<CAPTION>",
             "<DETAILED_CAPTION>",
-            "<GENERATE_PROMPT>",
+            "<MORE_DETAILED_CAPTION>",
+            "<MIXED_CAPTION>",
         ]
     else:
         choices = [
-            "<MORE_DETAILED_CAPTION>",
-            "<DETAILED_CAPTION>",
             "<CAPTION>",
+            "<DETAILED_CAPTION>",
+            "<MORE_DETAILED_CAPTION>",
         ]
     return gr.update(choices=choices)
 
@@ -410,58 +412,58 @@ def add_tab():
             #                with gr.Column(elem_id="civit_cards_column"):
             #                    gr.HTML(f"""<div><div id="civitaiimages_loading"><p>Loading...</p></div><div onscroll="civitaiaCursorLoad(this)" id="civitai_cardholder" data-nopreview='{nopreview}'></div></div>""")
 
-            with gr.TabItem(label="提示词生成",elem_id="styles_libary"):
-                with gr.Column():
+            # with gr.TabItem(label="提示词生成",elem_id="styles_libary"):
+            #     with gr.Column():
+            #         with gr.Column():
+            #             with gr.Tabs(elem_id = "libs"):
+
+            #                 with gr.TabItem(label="一般提示词",elem_id="styles_generator"):
+            #                     with gr.Row():
+            #                         with gr.Column():
+            #                             style_geninput_txt = gr.Textbox(label="输入:", lines=7,placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。如下载失败请手动安装模型~", elem_classes="stylez_promptgenbox")
+            #                             with gr.Row():
+            #                                 style_gengrab_btn = gr.Button("获取正向提示词",elem_id="style_promptgengrab_btn")
+            #                         with gr.Column():
+            #                             style_genoutput_txt = gr.Textbox(label="输出:", lines=7,placeholder="生成润色后的正向提示词",elem_classes="stylez_promptgenbox")
+            #                             with gr.Row():
+            #                                 style_gen_btn = gr.Button("生成",elem_id="style_promptgen_btn")
+            #                                 style_gensend_btn = gr.Button("应用正向提示词",elem_id="style_promptgen_send_btn")
+            #                     with gr.Row():
+            #                         style_genusecomma_btn = gr.Checkbox(label="使用逗号", value=True)
+            #                     with gr.Row():
+            #                         with gr.Column():
+            #                             style_gen_temp = gr.Slider(label="温度（越高 = 多样性更高但一致性较低）: ", minimum=0.1, maximum=1.0 ,value=0.9)
+            #                             style_gen_top_k = gr.Slider(label="top_k（每步采样的字符数量）:", minimum=1, maximum=50 ,value=8,step=1)
+            #                         with gr.Column():
+            #                             style_max_length = gr.Slider(label="最大字符数量:", minimum=1, maximum=160 ,value=80,step=1)
+            #                             style_gen_repetition_penalty = gr.Slider(label="重复惩罚:", minimum=0.1, maximum=2 ,value=1.2,step=0.1)
+
+            with gr.TabItem(label="超级提示词", elem_id="superprompt_generator"):
+                with gr.Row():
                     with gr.Column():
-                        with gr.Tabs(elem_id = "libs"):
-
-                            with gr.TabItem(label="一般提示词",elem_id="styles_generator"):
-                                with gr.Row():
-                                    with gr.Column():
-                                        style_geninput_txt = gr.Textbox(label="输入:", lines=7,placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。如下载失败请手动安装模型~", elem_classes="stylez_promptgenbox")
-                                        with gr.Row():
-                                            style_gengrab_btn = gr.Button("获取正向提示词",elem_id="style_promptgengrab_btn")
-                                    with gr.Column():
-                                        style_genoutput_txt = gr.Textbox(label="输出:", lines=7,placeholder="生成润色后的正向提示词",elem_classes="stylez_promptgenbox")
-                                        with gr.Row():
-                                            style_gen_btn = gr.Button("生成",elem_id="style_promptgen_btn")
-                                            style_gensend_btn = gr.Button("应用正向提示词",elem_id="style_promptgen_send_btn")
-                                with gr.Row():
-                                    style_genusecomma_btn = gr.Checkbox(label="使用逗号", value=True)
-                                with gr.Row():
-                                    with gr.Column():
-                                        style_gen_temp = gr.Slider(label="温度（越高 = 多样性更高但一致性较低）: ", minimum=0.1, maximum=1.0 ,value=0.9)
-                                        style_gen_top_k = gr.Slider(label="top_k（每步采样的字符数量）:", minimum=1, maximum=50 ,value=8,step=1)
-                                    with gr.Column():
-                                        style_max_length = gr.Slider(label="最大字符数量:", minimum=1, maximum=160 ,value=80,step=1)
-                                        style_gen_repetition_penalty = gr.Slider(label="重复惩罚:", minimum=0.1, maximum=2 ,value=1.2,step=0.1)
-
-                            with gr.TabItem(label="超级提示词", elem_id="superprompt_generator"):
-                                with gr.Row():
-                                    with gr.Column():
-                                        superprompt_input_txt = gr.Textbox(label="输入:", lines=7, placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。如下载失败请手动安装模型~", elem_classes="superprompt_box")
-                                        with gr.Row():
-                                            superprompt_gen_btn = gr.Button("获取正向提示词", elem_id="style_superprompt_btn")
-                                    with gr.Column():
-                                        superprompt_output_txt = gr.Textbox(label="输出:", lines=7, placeholder="生成润色后的自然语言提示词", elem_classes="superprompt_box")
-                                        with gr.Row():
-                                            style_super_btn = gr.Button("生成",elem_id="style_superprompt_btn")
-                                            superprompt_apply_btn = gr.Button("应用正向提示词", elem_id="style_superprompt_send_btn")
-                                with gr.Row():
-                                    superprompt_max_length = gr.Slider(
-                                        label="最大字符量:", 
-                                        minimum=25, 
-                                        maximum=512, 
-                                        value=128, 
-                                        step=1
-                                    )
-                                    superprompt_seed = gr.Slider(
-                                        label="种子值:", 
-                                        minimum=0, 
-                                        maximum=2**32-1, 
-                                        value=123456, 
-                                        step=1
-                                    )
+                        superprompt_input_txt = gr.Textbox(label="输入:", lines=7, placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。如下载失败请手动安装模型~", elem_classes="superprompt_box")
+                        with gr.Row():
+                            superprompt_gen_btn = gr.Button("获取正向提示词", elem_id="style_superprompt_btn")
+                    with gr.Column():
+                        superprompt_output_txt = gr.Textbox(label="输出:", lines=7, placeholder="生成润色后的自然语言提示词", elem_classes="superprompt_box")
+                        with gr.Row():
+                            style_super_btn = gr.Button("生成",elem_id="style_superprompt_btn")
+                            superprompt_apply_btn = gr.Button("应用正向提示词", elem_id="style_superprompt_send_btn")
+                with gr.Row():
+                    superprompt_max_length = gr.Slider(
+                        label="最大字符量:", 
+                        minimum=25, 
+                        maximum=512, 
+                        value=128, 
+                        step=1
+                    )
+                    superprompt_seed = gr.Slider(
+                        label="种子值:", 
+                        minimum=0, 
+                        maximum=2**32-1, 
+                        value=123456, 
+                        step=1
+                    )
 
             with gr.TabItem(label="提示词反推", elem_id="florence_prompt_generator"): # 新增 "提示词反推" Tab
                 with gr.Row():
@@ -504,6 +506,7 @@ def add_tab():
                         florence_generate_btn = gr.Button(
                             value="生成", variant="primary", elem_id="style_promptgen_btn"
                         )
+                        gr.HTML("""<p style="color: #F36812; font-size: 14px; height: 14px; margin: -5px 0px;">模型选择建议:下载"CogFlorence-2.2-Large"能满足基本反推要求，如果追求更准确的反推可以下载"Florence-2-large-PromptGen-v1.5"</p>""")
 
             with gr.TabItem(label="风格编辑器",elem_id="styles_editor"):
                 with gr.Row():
@@ -626,9 +629,9 @@ def add_tab():
         #periodcivit.change(fn=None,_js="refreshfetchCivitai",inputs=[nsfwlvl,sortcivit,periodcivit])
         #sortcivit.change(fn=None,_js="refreshfetchCivitai",inputs=[nsfwlvl,sortcivit,periodcivit])
         #nsfwlvl.change(fn=None,_js="refreshfetchCivitai",inputs=[nsfwlvl,sortcivit,periodcivit])
-        style_gengrab_btn.click(fn=None,_js="stylesgrabprompt" ,outputs=[style_geninput_txt])
-        style_gensend_btn.click(fn=None,_js='sendToPromtbox',inputs=[style_genoutput_txt])
-        style_gen_btn.click(fn=generate_style,inputs=[style_geninput_txt,style_gen_temp,style_gen_top_k,style_max_length,style_gen_repetition_penalty,style_genusecomma_btn],outputs=[style_genoutput_txt])
+        # style_gengrab_btn.click(fn=None,_js="stylesgrabprompt" ,outputs=[style_geninput_txt])
+        # style_gensend_btn.click(fn=None,_js='sendToPromtbox',inputs=[style_genoutput_txt])
+        # style_gen_btn.click(fn=generate_style,inputs=[style_geninput_txt,style_gen_temp,style_gen_top_k,style_max_length,style_gen_repetition_penalty,style_genusecomma_btn],outputs=[style_genoutput_txt])
         superprompt_gen_btn.click(fn=None,_js="stylesgrabprompt" ,outputs=[superprompt_input_txt])
         superprompt_apply_btn.click(fn=None,_js='sendToPromtbox',inputs=[superprompt_output_txt])
         style_super_btn.click(fn=call_generate_super_prompt,inputs=[superprompt_input_txt,superprompt_max_length,superprompt_seed],outputs=[superprompt_output_txt])

@@ -22,10 +22,11 @@ except ImportError:
 
 
 available_prompt_type = [
-    "<MORE_DETAILED_CAPTION>",
-    "<DETAILED_CAPTION>",
+    "<GENERATE_TAGS>",
     "<CAPTION>",
-    "<GENERATE_PROMPT>",
+    "<DETAILED_CAPTION>",
+    "<MORE_DETAILED_CAPTION>",
+    "<MIXED_CAPTION>",
 ]
 
 available_models = [
@@ -33,7 +34,9 @@ available_models = [
     "microsoft/Florence-2-base-ft",
     "microsoft/Florence-2-large",
     "microsoft/Florence-2-base",
-    "MiaoshouAI/Florence-2-base-PromptGen",
+    "thwri/CogFlorence-2.2-Large",
+    "MiaoshouAI/Florence-2-base-PromptGen-v1.5",
+    "MiaoshouAI/Florence-2-large-PromptGen-v1.5",
 ]
 
 
