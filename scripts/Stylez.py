@@ -506,7 +506,6 @@ def add_tab():
                         florence_generate_btn = gr.Button(
                             value="生成", variant="primary", elem_id="style_promptgen_btn"
                         )
-                        gr.HTML("""<p style="color: #F36812; font-size: 14px; height: 14px; margin: -5px 0px;">模型选择建议:下载"CogFlorence-2.2-Large"能满足基本反推要求，如果追求更准确的反推可以下载"Florence-2-large-PromptGen-v1.5"</p>""")
 
             with gr.TabItem(label="风格编辑器",elem_id="styles_editor"):
                 with gr.Row():
