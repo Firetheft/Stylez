@@ -441,13 +441,13 @@ def add_tab():
             with gr.TabItem(label="超级提示词", elem_id="superprompt_generator"):
                 with gr.Row():
                     with gr.Column():
-                        superprompt_input_txt = gr.Textbox(label="输入:", lines=7, placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。如下载失败请手动安装模型~", elem_classes="superprompt_box")
+                        superprompt_input_txt = gr.Textbox(label="输入:", lines=7, placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。", elem_classes="superprompt_box")
                         with gr.Row():
                             superprompt_gen_btn = gr.Button("获取正向提示词", elem_id="style_superprompt_btn")
                     with gr.Column():
                         superprompt_output_txt = gr.Textbox(label="输出:", lines=7, placeholder="生成润色后的自然语言提示词", elem_classes="superprompt_box")
                         with gr.Row():
-                            style_super_btn = gr.Button("生成",elem_id="style_superprompt_btn")
+                            style_super_btn = gr.Button(value="生成", variant="primary", elem_id="style_superprompt_btn")
                             superprompt_apply_btn = gr.Button("应用正向提示词", elem_id="style_superprompt_send_btn")
                 with gr.Row():
                     superprompt_max_length = gr.Slider(
@@ -617,9 +617,8 @@ def add_tab():
                 <p style="color: #F36812; font-size: 18px; margin-bottom: 8px; height: 12px;">注意事项：</p>
                 <p style="margin-bottom: 8px;"><span style="color: #F36812;">1. </span>需要说明的是如果你不小心使用了<span style="color: #F36812;">WebUI</span>生成按钮下面的清空提示词，此插件风格库中你已经选择的风格卡片标记并不会被同步取消，你需要刷新一下风格大类清空标记。</p>
                 <p style="margin-bottom: 8px;"><span style="color: #F36812;">2. </span>此插件提示词全部采用标准格式，如果你安装了<span style="color: #F36812;">All in one</span>这个插件，请打开设置菜单点击第二个图标进行Prompt格式调整（勾选第二项去除Prompt最后的一个逗号，其他项全部取消勾选。）</p>
-                <p style="margin-bottom: 8px;"><span style="color: #F36812;">3. </span>如果你因为网络问题无法自动下载<span style="color: #F36812;">风格生成器</span>和<span style="color: #F36812;">超级提示词</span>的相关依赖模型，可以访问我的相关文章<a href="https://www.disambo.com/2024/03/18/sd-webui-next-style/" style="color: green;">sd-webui-next-style</a>进行模型下载。</p>
-                <p style="margin-bottom: 8px;"><span style="color: #F36812;">4. </span>风格编辑小技巧：任何包含关键字<span style="color: #F36812;">{prompt}</span>的提示都将自动获取你当前的提示，并将其插入到<span style="color: #F36812;">{prompt}</span>的位置。一个简单的示例，你有一个风格的提示词是这样写的<span style="color: Gray;">A dynamic, black-and-white graphic novel scene with intense action, a paiting of {prompt}</span>，现在你在正向提示词中输入<span style="color: Gray;">Several stray cats</span>,当你应用这个风格模板后，正向提示词会变成<span style="color: Gray;">A dynamic, black-and-white graphic novel scene with intense action, a paiting of Several stray cats</span>。总之，如果你想自己编辑风格模板，可以先看看现有模板的格式。</p>
-                <p style="margin-bottom: 8px;"><span style="color: #F36812;">5. </span>如果用的愉快请点击下面图标收藏哦！顺便也可以逛逛我的个人网站<a href="https://www.disambo.com" style="color: green;">disambo.com</a></p>
+                <p style="margin-bottom: 8px;"><span style="color: #F36812;">3. </span>风格编辑小技巧：任何包含关键字<span style="color: #F36812;">{prompt}</span>的提示都将自动获取你当前的提示，并将其插入到<span style="color: #F36812;">{prompt}</span>的位置。一个简单的示例，你有一个风格的提示词是这样写的<span style="color: Gray;">A dynamic, black-and-white graphic novel scene with intense action, a paiting of {prompt}</span>，现在你在正向提示词中输入<span style="color: Gray;">Several stray cats</span>,当你应用这个风格模板后，正向提示词会变成<span style="color: Gray;">A dynamic, black-and-white graphic novel scene with intense action, a paiting of Several stray cats</span>。总之，如果你想自己编辑风格模板，可以先看看现有模板的格式。</p>
+                <p style="margin-bottom: 8px;"><span style="color: #F36812;">4. </span>如果用的愉快请点击下面图标收藏哦！顺便也可以逛逛我的个人网站<a href="https://www.disambo.com" style="color: green;">disambo.com</a></p>
                 <a href="https://github.com/Firetheft/sd-webui-next-style" target="_blank">
                     <img src="https://bu.dusays.com/2024/03/10/65edbb64b1ece.png" alt="GitHub" style="height: 24px; width: 24px; margin-right: 8px;"/>
                 </a>

@@ -52,16 +52,17 @@
     cursor: pointer;
     display: none; /* initially hide the checkbox */
     user-select: none;
-    color: #daf685 !important;
+    color: #ff8d00 !important;
 }
 
 .style_card_checkbox.checked {
-    display: block; /* show the checkbox when it is checked */
+    display: block; /* 选中时显示复选框 */
 }
 
 .style_card.selected {
-    /* Insert styling for selected cards here - can include border color change etc */
-    border: 5px solid #daf685; /* example green border for the selected card */
+    /* 在此处插入所选卡片的样式 -可以包括边框颜色更改等 */
+    border: 5px solid #ff8d00; /* 所选卡片的边框厚度及颜色设置 */
+    border-radius: 15px; /* 选中框圆角设置 */
 }
 
 /* @media screen and (max-width: 1440px) {
