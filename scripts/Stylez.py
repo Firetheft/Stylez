@@ -8,9 +8,11 @@ import shutil
 import json
 import csv
 import re
+import random
 from modules import scripts, shared,script_callbacks
 from scripts import promptgen as PG
 from scripts import superprompt as SP
+from scripts import fluxprompt as FP
 from scripts import florence as FL
 from modules import (
     generation_parameters_copypaste as parameters_copypaste,
@@ -338,6 +340,18 @@ def generate_style(prompt,temperature,top_k,max_length,repetition_penalty,usecom
 def call_generate_super_prompt(prompt,superprompt_max_length,superprompt_seed):
     return SP.generate_super_prompt(prompt, max_new_tokens=superprompt_max_length, seed=superprompt_seed)
 
+def call_generate_flux_prompt(prompt,fluxprompt_max_length,fluxprompt_seed):
+    return FP.generate_flux_prompt(prompt, max_new_tokens=fluxprompt_max_length, seed=fluxprompt_seed)
+
+#提示词模型合并下来菜单选择
+def generate_prompt_by_mode(prompt_mode, prompt_input_txt, max_length_slider, seed_slider):
+    if seed_slider == -1:
+        seed_slider = random.randint(0, 2**32 - 1)
+    if prompt_mode == "超级提示词":
+        return call_generate_super_prompt(prompt_input_txt, max_length_slider, seed_slider)
+    elif prompt_mode == "Flux提示词":
+        return call_generate_flux_prompt(prompt_input_txt, max_length_slider, seed_slider)
+
 def create_ar_button(label, width, height, button_class="ar-button"):
     return gr.Button(label, elem_classes=button_class).click(fn=None, _js=f'sendToARbox({width}, {height})')
 
@@ -412,7 +426,7 @@ def add_tab():
             #                with gr.Column(elem_id="civit_cards_column"):
             #                    gr.HTML(f"""<div><div id="civitaiimages_loading"><p>Loading...</p></div><div onscroll="civitaiaCursorLoad(this)" id="civitai_cardholder" data-nopreview='{nopreview}'></div></div>""")
 
-            # with gr.TabItem(label="提示词生成",elem_id="styles_libary"):
+            # with gr.TabItem(label="提示词扩写",elem_id="styles_libary"):
             #     with gr.Column():
             #         with gr.Column():
             #             with gr.Tabs(elem_id = "libs"):
@@ -438,30 +452,103 @@ def add_tab():
             #                             style_max_length = gr.Slider(label="最大字符数量:", minimum=1, maximum=160 ,value=80,step=1)
             #                             style_gen_repetition_penalty = gr.Slider(label="重复惩罚:", minimum=0.1, maximum=2 ,value=1.2,step=0.1)
 
-            with gr.TabItem(label="超级提示词", elem_id="superprompt_generator"):
+            #                 with gr.TabItem(label="超级提示词", elem_id="superprompt_generator"):
+            #                     with gr.Row():
+            #                         with gr.Column():
+            #                             superprompt_input_txt = gr.Textbox(label="输入:", lines=7, placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。", elem_classes="superprompt_box")
+            #                             with gr.Row():
+            #                                 superprompt_gen_btn = gr.Button("获取正向提示词", elem_id="style_superprompt_btn")
+            #                         with gr.Column():
+            #                             superprompt_output_txt = gr.Textbox(label="输出:", lines=7, placeholder="生成润色后的自然语言提示词", elem_classes="superprompt_box")
+            #                             with gr.Row():
+            #                                 style_super_btn = gr.Button(value="生成", variant="primary", elem_id="style_superprompt_btn")
+            #                                 superprompt_apply_btn = gr.Button("应用正向提示词", elem_id="style_superprompt_send_btn")
+            #                     with gr.Row():
+            #                         superprompt_max_length = gr.Slider(
+            #                             label="最大字符量:", 
+            #                             minimum=25, 
+            #                             maximum=512, 
+            #                             value=128, 
+            #                             step=1
+            #                         )
+            #                         superprompt_seed = gr.Slider(
+            #                             label="种子值:", 
+            #                             minimum=0, 
+            #                             maximum=2**32-1, 
+            #                             value=123456, 
+            #                             step=1
+            #                         )
+
+            #                 with gr.TabItem(label="Flux提示词", elem_id="fluxprompt_generator"):
+            #                     with gr.Row():
+            #                         with gr.Column():
+            #                             fluxprompt_input_txt = gr.Textbox(label="输入:", lines=7, placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。", elem_classes="fluxprompt_box")
+            #                             with gr.Row():
+            #                                 fluxprompt_gen_btn = gr.Button("获取正向提示词", elem_id="style_fluxprompt_btn")
+            #                         with gr.Column():
+            #                             fluxprompt_output_txt = gr.Textbox(label="输出:", lines=7, placeholder="生成润色后的自然语言提示词", elem_classes="fluxprompt_box")
+            #                             with gr.Row():
+            #                                 style_flux_btn = gr.Button(value="生成", variant="primary", elem_id="style_fluxprompt_btn")
+            #                                 fluxprompt_apply_btn = gr.Button("应用正向提示词", elem_id="style_fluxprompt_send_btn")
+            #                     with gr.Row():
+            #                         fluxprompt_max_length = gr.Slider(
+            #                             label="最大字符量:", 
+            #                             minimum=25, 
+            #                             maximum=512, 
+            #                             value=256, 
+            #                             step=1
+            #                         )
+            #                         fluxprompt_seed = gr.Slider(
+            #                             label="种子值:", 
+            #                             minimum=0, 
+            #                             maximum=2**32-1, 
+            #                             value=123456, 
+            #                             step=1
+            #                         )
+
+            with gr.TabItem(label="提示词扩写", elem_id="styles_libary"):
+                prompt_mode = gr.Dropdown(
+                    label="选择扩写模型",
+                    choices=["超级提示词", "Flux提示词"],
+                    value="超级提示词",  # 默认值
+                    elem_id="prompt_mode_selector"
+                )
                 with gr.Row():
                     with gr.Column():
-                        superprompt_input_txt = gr.Textbox(label="输入:", lines=7, placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的的网络状况，需要等待几分钟时间。", elem_classes="superprompt_box")
+                        # 通用输入文本框
+                        prompt_input_txt = gr.Textbox(
+                            label="输入:", 
+                            lines=7, 
+                            placeholder="在这里输入原始正向提示词。首次使用会自动下载安装模型文件，保持良好的网络状况，需要等待几分钟时间。", 
+                            elem_classes="prompt_box"
+                        )
                         with gr.Row():
-                            superprompt_gen_btn = gr.Button("获取正向提示词", elem_id="style_superprompt_btn")
+                            prompt_gen_btn = gr.Button("获取正向提示词", elem_id="prompt_gen_btn")
                     with gr.Column():
-                        superprompt_output_txt = gr.Textbox(label="输出:", lines=7, placeholder="生成润色后的自然语言提示词", elem_classes="superprompt_box")
+                        # 通用输出文本框
+                        prompt_output_txt = gr.Textbox(
+                            label="输出:", 
+                            lines=7, 
+                            placeholder="生成润色后的自然语言提示词", 
+                            elem_classes="prompt_box"
+                        )
                         with gr.Row():
-                            style_super_btn = gr.Button(value="生成", variant="primary", elem_id="style_superprompt_btn")
-                            superprompt_apply_btn = gr.Button("应用正向提示词", elem_id="style_superprompt_send_btn")
+                            gen_btn = gr.Button(value="生成", variant="primary", elem_id="prompt_gen_btn")
+                            apply_btn = gr.Button("应用正向提示词", elem_id="prompt_apply_btn")
                 with gr.Row():
-                    superprompt_max_length = gr.Slider(
+                    # 根据模式选择调整的参数
+                    max_length_slider = gr.Slider(
                         label="最大字符量:", 
                         minimum=25, 
                         maximum=512, 
-                        value=128, 
+                        value=256, 
                         step=1
                     )
-                    superprompt_seed = gr.Slider(
+                    seed_slider = gr.Slider(
                         label="种子值:", 
-                        minimum=0, 
+                        minimum=-1, 
                         maximum=2**32-1, 
-                        value=123456, 
+                        value=-1, 
                         step=1
                     )
 
@@ -630,9 +717,19 @@ def add_tab():
         # style_gengrab_btn.click(fn=None,_js="stylesgrabprompt" ,outputs=[style_geninput_txt])
         # style_gensend_btn.click(fn=None,_js='sendToPromtbox',inputs=[style_genoutput_txt])
         # style_gen_btn.click(fn=generate_style,inputs=[style_geninput_txt,style_gen_temp,style_gen_top_k,style_max_length,style_gen_repetition_penalty,style_genusecomma_btn],outputs=[style_genoutput_txt])
-        superprompt_gen_btn.click(fn=None,_js="stylesgrabprompt" ,outputs=[superprompt_input_txt])
-        superprompt_apply_btn.click(fn=None,_js='sendToPromtbox',inputs=[superprompt_output_txt])
-        style_super_btn.click(fn=call_generate_super_prompt,inputs=[superprompt_input_txt,superprompt_max_length,superprompt_seed],outputs=[superprompt_output_txt])
+        # superprompt_gen_btn.click(fn=None,_js="stylesgrabprompt" ,outputs=[superprompt_input_txt])
+        # superprompt_apply_btn.click(fn=None,_js='sendToPromtbox',inputs=[superprompt_output_txt])
+        # style_super_btn.click(fn=call_generate_super_prompt,inputs=[superprompt_input_txt,superprompt_max_length,superprompt_seed],outputs=[superprompt_output_txt])
+        # fluxprompt_gen_btn.click(fn=None,_js="stylesgrabprompt" ,outputs=[fluxprompt_input_txt])
+        # fluxprompt_apply_btn.click(fn=None,_js='sendToPromtbox',inputs=[fluxprompt_output_txt])
+        # style_flux_btn.click(fn=call_generate_flux_prompt,inputs=[fluxprompt_input_txt,fluxprompt_max_length,fluxprompt_seed],outputs=[fluxprompt_output_txt])
+        prompt_gen_btn.click(fn=None, _js="stylesgrabprompt", outputs=[prompt_input_txt])
+        apply_btn.click(fn=None, _js='sendToPromtbox', inputs=[prompt_output_txt])
+        gen_btn.click(
+            fn=generate_prompt_by_mode,
+            inputs=[prompt_mode, prompt_input_txt, max_length_slider, seed_slider],
+            outputs=[prompt_output_txt]
+        )
         oldstylesCB.change(fn=oldstyles,inputs=[oldstylesCB],_js="hideOldStyles")
         refresh_button.click(fn=refresh_styles,inputs=[category_dropdown], outputs=[Styles_html,category_dropdown,category_dropdown,style_savefolder_txt])
         card_size_slider.release(fn=save_card_def,inputs=[card_size_slider])
