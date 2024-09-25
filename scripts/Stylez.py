@@ -343,14 +343,22 @@ def call_generate_super_prompt(prompt,superprompt_max_length,superprompt_seed):
 def call_generate_flux_prompt(prompt,fluxprompt_max_length,fluxprompt_seed):
     return FP.generate_flux_prompt(prompt, max_new_tokens=fluxprompt_max_length, seed=fluxprompt_seed)
 
-#提示词模型合并下来菜单选择
+# 根据模式选择决定调用哪个函数
 def generate_prompt_by_mode(prompt_mode, prompt_input_txt, max_length_slider, seed_slider):
+    # 当种子值为-1时，生成随机种子
     if seed_slider == -1:
         seed_slider = random.randint(0, 2**32 - 1)
+
+    # 更新实际使用的种子值
+    actual_seed_value = seed_slider
+
+    # 根据模式生成提示词
     if prompt_mode == "超级提示词":
-        return call_generate_super_prompt(prompt_input_txt, max_length_slider, seed_slider)
+        generated_prompt = call_generate_super_prompt(prompt_input_txt, max_length_slider, seed_slider)
     elif prompt_mode == "Flux提示词":
-        return call_generate_flux_prompt(prompt_input_txt, max_length_slider, seed_slider)
+        generated_prompt = call_generate_flux_prompt(prompt_input_txt, max_length_slider, seed_slider)
+
+    return generated_prompt, f"<p>实时种子: {actual_seed_value}</p>"
 
 def create_ar_button(label, width, height, button_class="ar-button"):
     return gr.Button(label, elem_classes=button_class).click(fn=None, _js=f'sendToARbox({width}, {height})')
@@ -536,21 +544,30 @@ def add_tab():
                             gen_btn = gr.Button(value="生成", variant="primary", elem_id="prompt_gen_btn")
                             apply_btn = gr.Button("应用正向提示词", elem_id="prompt_apply_btn")
                 with gr.Row():
-                    # 根据模式选择调整的参数
-                    max_length_slider = gr.Slider(
-                        label="最大字符量:", 
-                        minimum=25, 
-                        maximum=512, 
-                        value=256, 
-                        step=1
-                    )
-                    seed_slider = gr.Slider(
-                        label="种子值:", 
-                        minimum=-1, 
-                        maximum=2**32-1, 
-                        value=-1, 
-                        step=1
-                    )
+                    with gr.Column():
+                        max_length_slider = gr.Slider(
+                            label="最大字符量:", 
+                            minimum=25, 
+                            maximum=512, 
+                            value=256, 
+                            step=1
+                        )
+                    with gr.Column():
+                        with gr.Row():
+                            with gr.Column():
+                                seed_slider = gr.Slider(
+                                    label="种子值:", 
+                                    minimum=-1, 
+                                    maximum=2**32-1, 
+                                    value=-1, 
+                                    step=1
+                                )
+                            with gr.Column():
+                                # 显示实际使用的种子值
+                                actual_seed_html = gr.HTML(
+                                    value="",  # 初始为空
+                                    elem_id="actual_seed_html"  # 元素ID
+                                )
 
             with gr.TabItem(label="提示词反推", elem_id="florence_prompt_generator"): # 新增 "提示词反推" Tab
                 with gr.Row():
@@ -728,7 +745,7 @@ def add_tab():
         gen_btn.click(
             fn=generate_prompt_by_mode,
             inputs=[prompt_mode, prompt_input_txt, max_length_slider, seed_slider],
-            outputs=[prompt_output_txt]
+            outputs=[prompt_output_txt, actual_seed_html]  # 输出到两个控件：提示词输出和种子显示框
         )
         oldstylesCB.change(fn=oldstyles,inputs=[oldstylesCB],_js="hideOldStyles")
         refresh_button.click(fn=refresh_styles,inputs=[category_dropdown], outputs=[Styles_html,category_dropdown,category_dropdown,style_savefolder_txt])
